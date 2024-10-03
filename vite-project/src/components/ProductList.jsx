@@ -1,4 +1,4 @@
-import useFetch from "../utils/useFetch";
+import useFetch from "../utils/useFetch.js";
 import { useEffect, useState } from "react";
 import ProductItem from "./ProductItem";
 
@@ -7,21 +7,24 @@ function ProductList() {
     const [items, setItems] = useState([]);
     const [search, setSearch] = useState("");
     const [filteredItems, setFilteredItems] = useState([]);
-    const { data, error, loading } = useFetch("https://dummyjson.com/products");
 
-    //Fetch data from api using Custom useFetch hook
+    //Fetching all products using Get api and Custom useFetch hook
+    const { data, error, loading } = useFetch("http://localhost:5100/products", {
+        method: "GET"
+    });
+
+    //If data, set filteredItems and item to data
     useEffect(() => {
         if (data) {
-            const Data = data.products;
-            setFilteredItems(Data);
-            setItems(Data);
+            setFilteredItems(data);
+            console.log(data);
+            setItems(data);
         }
-        console.log(data);
     }, [data]);
 
     //Handle error
     if (error) {
-        return alert(`Error in fetching data ${error}`);
+        return <p className="text-center text-3xl mt-44">{error}</p>
     }
 
     if (loading) {
@@ -46,7 +49,7 @@ function ProductList() {
                 <div className="grid sm:grid-cols-2 md:grid-cols-3 grid-cols-1 w-9/12 mt-24 gap-10 h-72">
                     {
                         filteredItems.map((item) => (
-                            <ProductItem item={item} key={item.id} />
+                            <ProductItem item={item} key={item._id} />
                         ))
                     }
                 </div>

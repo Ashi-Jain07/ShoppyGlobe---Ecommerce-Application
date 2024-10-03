@@ -1,14 +1,37 @@
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { additem } from "../utils/cartSlice";
 
 function ProductItem(props) {
 
-    const dispatch = useDispatch();
+    //Add item in a cart using post cart api
+    async function handleAddItem(item) {
+        try {
+            const response = await fetch("http://localhost:5100/cart", {
+                method: "POST",
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    _id: item._id,
+                    title: item.title,
+                    image: item.image,
+                    rating: item.rating,
+                    quantity: item.quantity
+                })
+            });
 
-    //using AddItem reducer function from redux store
-    function handleAddItem(item) {
-        dispatch(additem(item))
+            if (!response.ok) {
+                const data = await response.json();
+                throw new Error(data.message);
+            }
+
+            const result = response.json();
+            console.log(result);
+
+        } catch (error) {
+            console.log(error);
+            alert(error.message);
+        }
     }
 
     return (
@@ -17,8 +40,8 @@ function ProductItem(props) {
 
                 <div className="flex justify-center">
                     <div className="relative group">
-                        <img src={props.item.images[0]} className="h-44 object-cover transition duration-300 group-hover:blur-sm"></img>
-                        <Link to={`/productdetail/${props.item.id}`} key={props.item.id} >
+                        <img src={props.item.image} className="h-44 object-cover transition duration-300 group-hover:blur-sm"></img>
+                        <Link to={`/productdetail/${props.item._id}`} key={props.item._id} >
                             <button className="absolute text-2xl inset-0 flex items-center justify-center bg-transparent bg-opacity-50 font-bold opacity-0 group-hover:opacity-100 transition duration-300">View Detail</button>
                         </Link>
                     </div>

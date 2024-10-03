@@ -5,16 +5,31 @@ import ProductItem from "./ProductItem";
 function Home() {
 
     const [filterItems, setFilterItems] = useState([]);
-    const { data, error, loading } = useFetch("https://dummyjson.com/products");
 
-    //Fetch data from api using Custom useFetch hook
+    //Taking accessToken from localStorage
+    const token = JSON.parse(localStorage.getItem("accessToken"));
+
+    //Check if Date.now is greater than item.Expiry, then delete a accessToken and firstName from localStorage
+    if (token) {
+        if (Date.now() > token.expiry) {
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("firstName");
+            return
+        }
+    };
+
+    const firstName = localStorage.getItem("firstName");
+
+    //Fetching Products data using custon useFetch hook
+    const { data, error, loading } = useFetch("http://localhost:5100/products", {
+        method: "GET"
+    });
+
+    //If data then set filterItems to data
     useEffect(() => {
         if (data) {
-            const Data = data.products;
-            setFilterItems(Data);
+            setFilterItems(data);
         }
-        console.log(data);
-
     }, [data]);
 
     //Handle error
@@ -35,7 +50,8 @@ function Home() {
 
     return (
         <>
-            <h1 className="text-center text-6xl mt-20"><b>Welcome</b></h1>
+            {/* Conditional rendering based on token data */}
+            <h1 className="text-center text-6xl mt-20"><b>Hii {token ? <>{firstName} 👋🏻</> : ""}</b></h1>
             <p className="text-center text-3xl mt-2"><i>Thank you for choosing us as your shopping destination. <br />Discover unique products that reflect your individuality.</i></p>
             <h1 className="text-center text-5xl mt-20"><b>Top-Rated Products</b></h1>
 
@@ -43,7 +59,7 @@ function Home() {
                 <div className="grid sm:grid-cols-2 md:grid-cols-3 grid-cols-1 w-9/12 mt-24 gap-10 h-72">
                     {
                         filteredItems.map((item) => (
-                            <ProductItem item={item} key={item.id} />
+                            <ProductItem item={item} key={item._id} />
                         ))
                     }
                 </div>

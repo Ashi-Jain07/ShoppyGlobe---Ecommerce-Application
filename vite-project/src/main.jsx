@@ -7,10 +7,12 @@ import Home from './components/Home.jsx';
 import "./components/index.css";
 
 //Using Lazy and Suspense for App optimization
-const ProductDetail = lazy(() => import("./components/ProductDetail.jsx"))
-const ProductList = lazy(() => import("./components/ProductList.jsx"))
-const Cart = lazy(() => import("./components/Cart.jsx"))
-const NotFound = lazy(() => import("./components/NotFound.jsx"))
+const ProductDetail = lazy(() => import("./components/ProductDetail.jsx"));
+const ProductList = lazy(() => import("./components/ProductList.jsx"));
+const Cart = lazy(() => import("./components/Cart.jsx"));
+const Login = lazy(() => import("./components/Login.jsx"));
+const Register = lazy(() => import("./components/Register.jsx"));
+const NotFound = lazy(() => import("./components/NotFound.jsx"));
 
 //Create a routes for different paths
 const appRouter = createBrowserRouter([
@@ -33,6 +35,14 @@ const appRouter = createBrowserRouter([
       {
         path: "/cart",
         element: <Suspense fallback={<h1 className='text-center text-3xl'>Loading...</h1>}> <Cart /> </Suspense> 
+      },
+      {
+        path: "/login",
+        element: <Suspense fallback={<h1 className='text-center text-3xl'>Loading...</h1>}> <Login /> </Suspense> 
+      },
+      {
+        path: "/register",
+        element: <Suspense fallback={<h1 className='text-center text-3xl'>Loading...</h1>}> <Register /> </Suspense> 
       }
     ],
     errorElement: <Suspense fallback={<h1 className='text-center text-3xl'>Loading...</h1>}> <NotFound /> </Suspense>  
